@@ -7,6 +7,25 @@ var loader = function() {
 	return (this instanceof loader) ? this.init() : new loader();
 };
 
+var ie = Boolean(document.all);
+
+if (ie){
+	var allScript = 0;
+	var loadedScript = 0;
+	var loadedFunction = function(){};
+	window.__loader_onreadystatechange = function(script){ 
+		switch(script.readyState){ 
+			case 'complete': 
+			case 'loaded' : 
+				loadedScript++;
+				if (allScript === loadedScript){
+					loadedFunction();
+				}
+			break; 
+		} 
+	};
+}
+
 loader.prototype = {
 	init: function() {
 		var self = this;
@@ -33,8 +52,12 @@ loader.prototype = {
 			return self;
 		}
 
-		document.write('<script src="' + src + '"></script>');
+		document.write('<script src="' + src + '"' + (ie ? ' onreadystatechange="__loader_onreadystatechange(this);"' : '') + '></script>');
 		self.loadedScript[src] = true;
+
+		if (ie){
+			allScript++;
+		}
 
 		return self;
 	},
@@ -62,10 +85,15 @@ loader.prototype = {
 		var self = this;
 
 		loader._fn = fn;
-		document.write('<script>loader._fn()</script>');
+		if (ie){
+			loadedFunction = fn;
+		} else {
+			document.write('<script>loader._fn()</script>');
+		}
 	}
 };
 
 window.loader = loader;
+
 
 })(window);
