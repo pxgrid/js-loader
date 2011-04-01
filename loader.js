@@ -3,6 +3,8 @@
 var document = window.document,
 	head = document.getElementsByTagName('head')[0]
 	isIE = Boolean(document.all)
+	loadedScript = {},
+	loadedCSS = {},
 	uid = 0;
 
 var loader = function() {
@@ -13,8 +15,6 @@ loader.prototype = {
 	init: function() {
 		var self = this;
 
-		self.loadedScript = {};
-		self.loadedCSS = {};
 		self.readyFuncName = '__loader_ready_' + uid++;
 		self.basePath = (function (e) {
 			if (e.nodeName.toLowerCase() == 'script') {
@@ -46,7 +46,7 @@ loader.prototype = {
 
 		src = /^(http|\/)/.test(src) ? src : self.basePath + src;
 
-		if (self.loadedScript[src]) {
+		if (loadedScript[src]) {
 			return self;
 		}
 
@@ -57,7 +57,7 @@ loader.prototype = {
 		}
 
 		document.write('<script src="' + src + '" ' + onreadyAttr + '></script>');
-		self.loadedScript[src] = true;
+		loadedScript[src] = true;
 
 		return self;
 	},
@@ -66,7 +66,7 @@ loader.prototype = {
 
 		href = /^(http|\/)/.test(href) ? href : self.basePath + href;
 
-		if (self.loadedCSS[href]) {
+		if (loadedCSS[href]) {
 			return self;
 		}
 
@@ -77,7 +77,7 @@ loader.prototype = {
 		link.href = href;
 		link.media = media;
 		head.appendChild(link);
-		self.loadedCSS[href] = true;
+		loadedCSS[href] = true;
 
 		return self;
 	},
