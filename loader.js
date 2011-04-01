@@ -1,30 +1,13 @@
 (function(window, undefined) {
 
 var document = window.document,
-	head = document.getElementsByTagName('head')[0];
+	head = document.getElementsByTagName('head')[0]
+	isIE = Boolean(document.all)
+	uid = 0;
 
 var loader = function() {
 	return (this instanceof loader) ? this.init() : new loader();
 };
-
-var ie = Boolean(document.all);
-
-if (ie){
-	var allScript = 0;
-	var loadedScript = 0;
-	var loadedFunction = function(){};
-	window.__loader_onreadystatechange = function(script){ 
-		switch(script.readyState){ 
-			case 'complete': 
-			case 'loaded' : 
-				loadedScript++;
-				if (allScript === loadedScript){
-					loadedFunction();
-				}
-			break; 
-		} 
-	};
-}
 
 loader.prototype = {
 	init: function() {
@@ -32,6 +15,7 @@ loader.prototype = {
 
 		self.loadedScript = {};
 		self.loadedCSS = {};
+		self.readyFuncName = '__loader_ready_' + uid++;
 		self.basePath = (function (e) {
 			if (e.nodeName.toLowerCase() == 'script') {
 				var span = document.createElement('span');
@@ -40,6 +24,20 @@ loader.prototype = {
 			}
 			return arguments.callee(e.lastChild);
 		})(document);
+
+		if (isIE) {
+			self.allScriptCount = 0;
+			self.loadedScriptCount = 0;
+			self.onready = function() {};
+			window[self.readyFuncName] = function(script) {
+				if (script.readyState === 'complete') { 
+					self.loadedScriptCount++;
+					if (self.allScriptCount === self.loadedScriptCount) {
+						self.onready();
+					}
+				} 
+			}
+		}
 
 		return self;
 	},
@@ -52,12 +50,14 @@ loader.prototype = {
 			return self;
 		}
 
-		document.write('<script src="' + src + '"' + (ie ? ' onreadystatechange="__loader_onreadystatechange(this);"' : '') + '></script>');
-		self.loadedScript[src] = true;
-
-		if (ie){
-			allScript++;
+		var onreadyAttr = '';
+		if (isIE) {
+			self.allScriptCount++;
+			onreadyAttr = 'onreadystatechange="' + self.readyFuncName + '(this)"';
 		}
+
+		document.write('<script src="' + src + '" ' + onreadyAttr + '></script>');
+		self.loadedScript[src] = true;
 
 		return self;
 	},
@@ -84,11 +84,11 @@ loader.prototype = {
 	ready: function(fn) {
 		var self = this;
 
-		loader._fn = fn;
-		if (ie){
-			loadedFunction = fn;
+		if (isIE) {
+			self.onready = fn;
 		} else {
-			document.write('<script>loader._fn()</script>');
+			window[self.readyFuncName] = fn;
+			document.write('<script>' + self.readyFuncName + '()</script>');
 		}
 	}
 };
