@@ -11,6 +11,14 @@ var loader = function() {
 	return (this instanceof loader) ? this.init() : new loader();
 };
 
+loader.script = function(src) {
+	return loader().script(src);
+};
+
+loader.css = function(href, media) {
+	return loader().css(href, media);
+};
+
 loader.prototype = {
 	init: function() {
 		var self = this;
