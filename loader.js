@@ -11,12 +11,12 @@
 
 (function(window, undefined) {
 
-var document = window.document,
-	head = document.getElementsByTagName('head')[0]
-	isIE = Boolean(document.all)
-	loadedScript = {},
-	loadedCSS = {},
-	uid = 0;
+var document = window.document;
+var head = document.getElementsByTagName('head')[0];
+var isIE = Boolean(document.all);
+var loadedScript = {};
+var loadedCSS = {};
+var uid = 0;
 
 var loader = function() {
 	return (this instanceof loader) ? this.init() : new loader();
