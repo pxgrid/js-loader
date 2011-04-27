@@ -123,6 +123,10 @@
 	};
 	ChainLoader.prototype = {
 		add: function(src){
+			if(cache[src]){
+				return;
+			}
+			cache[src] = true;
 			document.write('<script src="' + src + '"></script>');
 		},
 		ready: function(fn){
@@ -174,6 +178,10 @@
 			return (script.readyState === 'complete');
 		},
 		add: function(src){
+			if(cache[src]){
+				return;
+			}
+			cache[src] = true;
 			this._total++;
 			var onreadyAttr = 'onreadystatechange="' + this._loadHandlerFnName + '(this)"';
 			document.write('<script src="' + src + '" ' + onreadyAttr + '></script>');
