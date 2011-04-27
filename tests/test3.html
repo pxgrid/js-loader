@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>test</title>
+<link rel="stylesheet" href="/css/style.css">
+<script src="/js/loader.js"></script>
+<script src="/js/main.js"></script>
+</head>
+<body>
+
+	<h1>loader.js test</h1>
+
+	<p>Define this directory to apache root to test these.</p>
+
+	<h2>css loading</h2>
+	<div class="test" id="test1">loader.css('1.css');</div>
+	<div class="test" id="test2">loader.css('2.css', 'all');</div>
+	<div class="test" id="test3">loader.css('3.css', 'print'); <br />// this will be green if you do print preview</div>
+	<div class="test" id="test4">loader.css('css/4.css', 'all', true); // ignoreBasePath</div>
+	<div class="test" id="test5">loader.css('./css/5.css', 'all', true); // ignoreBasePath</div>
+	<h2>js loading (root relative path)</h2>
+	<div id="output1">
+		<div class="test" id="out1-1">.script('jquery-1.5.2.min.js') then window.jQuery</div>
+		<div class="test" id="out1-2">.script('1.js')</div>
+		<div class="test" id="out1-3">.script('js/2.js', true) // ignoreBasePath</div>
+		<div class="test" id="out1-5">jQuery.fn.ready worked</div>
+		<div class="test" id="out1-6">.script('jq1.js') // depends on jQuery</div>
+		<div class="test" id="out1-7">.script('jq2.js') // depends on jq1.js</div>
+	</div>
+
+</body></html>
