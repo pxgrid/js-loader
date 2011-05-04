@@ -5,7 +5,7 @@
  * Licensed under the MIT License:
  * http://www.opensource.org/licenses/mit-license.php
  *
- * @version  0.1.1 (2011/04/28)
+ * @version  0.1.2 (2011/05/04)
  */
 (function(window, undefined) {
 
@@ -25,12 +25,12 @@
 			}
 		}
 	})();
-	var firstScript = (function(){
+	var loaderScript = (function(){
 		var scripts = document.getElementsByTagName('script');
 		return scripts[scripts.length-1];
 	})();
 	var basePath_css = firstCSSLink ? firstCSSLink.href.replace(/[^\/]+$/, '') : '';
-	var basePath_js = firstScript.src.replace(/[^\/]+$/, '');
+	var basePath_js = loaderScript.src.replace(/[^\/]+$/, '');
 
 	/* utils */
 
